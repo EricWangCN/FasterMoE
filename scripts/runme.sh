@@ -3,8 +3,8 @@
 export LOG_PREFIX=ChaosFlow-AE
 
 # Update 2 paths below on your own cluster
-export DUMP_PREFIX=/mnt/zoltan/laekov/dump
-export DATA_PREFIX=/home/ppopp_ae/dataset
+export DUMP_PREFIX=/mnt/t-zilongwang/dumps
+export DATA_PREFIX=/mnt/t-zilongwang/dataset
 # Number of GPUs per node
 export NPN=8
 
@@ -19,10 +19,15 @@ reinstall() {
     aelog Uninstalling previous fastmoe
     pip uninstall -y fastmoe 2>&1 >logs/install.log
 
+    echo $DONE_1
     aelog Installing $1
+    echo $DONE_3
     pushd $1
+    echo $DONE_2
     USE_NCCL=1 TORCH_CUDA_ARCH_LIST="6.0;7.0;8.0" USE_NCCL=1 python3 setup.py install --user 2>&1 >../logs/install.log
+    echo $DONE_4
     popd 
+
 }
 
 fig9() {
@@ -118,9 +123,9 @@ tab3() {
 }
 
 reinstall fastmoe
-fig9
+# fig9
 fig10
-fig11
-fig12
-fig13
-tab3
+# fig11
+# fig12
+# fig13
+# tab3

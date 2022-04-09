@@ -14,14 +14,7 @@ do
             export TRACE_LAYER=$tl
             export TRACE_ITER=$ti
             export MASTER_PORT=$(expr $RANDOM % 10000 + 10000)
-            srun --quiet \
-                -A priority \
-                -p Big \
-                -N 2 \
-                --export=ALL \
-                --ntasks-per-node=$NPN \
-                --gres=gpu:$NPN \
-                scripts/exec.sh benchmarks/run_trace.py >> logs/pred.log
+            python3 -m torch.distributed.launch --nproc_per_node=1 /mnt/t-zilongwang/FasterMoE/benchmarks/run_trace.py >> logs/pred.log
         done
     done
 done

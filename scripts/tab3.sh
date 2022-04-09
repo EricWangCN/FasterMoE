@@ -15,17 +15,7 @@ pretrain() {
     echo "        tail -f logs/$TASK_NAME.log"
 
     MASTER_PORT=$(expr $RANDOM % 10000 + 10000) \
-    srun --quiet \
-        -A priority \
-        -p Big \
-        -N 2 \
-        --exclusive \
-        --export=ALL \
-        --ntasks-per-node=1 \
-        --gres=gpu:$NPN \
-        --exclusive \
-        -o ../logs/$TASK_NAME.log \
-        examples/pretrain_gpt_distributed.sh 
+    python3 -m torch.distributed.launch --nproc_per_node=8 -m /mnt/t-zilongwang/FasterMoE/examples/pretrain_gpt_distributed.sh 
     popd
 }
 

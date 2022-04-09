@@ -77,10 +77,14 @@ if __name__ == '__main__':
     else:
         rank = 0
         world_size = 1
-    d_model = int(sys.argv[1])
-    trace_path = sys.argv[2]
-    trace_layer = int(sys.argv[3])
-    trace_iter = int(sys.argv[4])
+    # d_model = int(sys.argv[1])
+    # trace_path = sys.argv[2]
+    # trace_layer = int(sys.argv[3])
+    # trace_iter = int(sys.argv[4])
+    d_model = int(os.environ.get('D_MODEL', 1024))
+    trace_path = os.environ.get('TRACE_PATH')
+    trace_layer = int(os.environ.get('TRACE_LAYER', 0))
+    trace_iter = int(os.environ.get('TRACE_ITER', 500))
 
     for tl in range(trace_layer):
         if rank == 0:

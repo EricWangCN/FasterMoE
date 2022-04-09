@@ -10,16 +10,7 @@ runtrace() {
     touch $logname
     echo D_MODEL $1 TRACE_PATH $2 TRACE_LAYER $3 TRACE_ITER $4 >> $logname
     MASTER_PORT=$(expr $RANDOM % 10000 + 10000) \
-    srun --quiet \
-        -A priority \
-        -p Big \
-        -N 2 \
-        --exclusive \
-        --export=ALL \
-        --ntasks-per-node=$NPN \
-        --gres=gpu:$NPN \
-        --exclusive \
-        scripts/exec.sh benchmarks/run_iters.py $d $p $l $i \
+    python3 -m torch.distributed.launch --nproc_per_node=8 benchmarks/run_iters.py $d $p $l $i \
         | tee -a $logname | grep Layer
 }
 
@@ -65,16 +56,7 @@ run_ds_once() {
     touch $logname
     echo D_MODEL $1 TRACE_PATH $2 DS Stage $DSP_STAGE >> $logname
     MASTER_PORT=$(expr $RANDOM % 10000 + 10000) \
-    srun --quiet \
-        -A priority \
-        -p Big \
-        -N 2 \
-        --exclusive \
-        --export=ALL \
-        --ntasks-per-node=$NPN \
-        --gres=gpu:$NPN \
-        --exclusive \
-        scripts/exec.sh benchmarks/run_ds.py $3 --deepspeed \
+    python3 -m torch.distributed.launch --nproc_per_node=8 /mnt/t-zilongwang/FasterMoE/benchmarks/run_ds.py $3 --deepspeed \
             --deepspeed_config benchmarks/deepspeed_config_stage$3.json \
             >> $logname
 }
