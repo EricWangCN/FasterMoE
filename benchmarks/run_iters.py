@@ -85,7 +85,7 @@ if __name__ == '__main__':
     trace_path = os.environ.get('TRACE_PATH')
     trace_layer = int(os.environ.get('TRACE_LAYER', 0))
     trace_iter = int(os.environ.get('TRACE_ITER', 500))
-
+    torch.cuda.set_device(rank)
     for tl in range(trace_layer):
         if rank == 0:
             print('    Iteration {} Layer {} / {}'.format(trace_iter, tl, trace_layer))

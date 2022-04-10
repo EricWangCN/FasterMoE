@@ -80,9 +80,9 @@ if __name__ == '__main__':
     d_models = os.environ.get("D_MODEL", "1024")
     trace_path = os.environ.get('TRACE_PATH')
     trace_layer = int(os.environ.get('TRACE_LAYER', '0'))
-    trace_iter = int(os.environ.get('TRACE_ITER', '80500'))
+    trace_iter = int(os.environ.get('TRACE_ITER', '40500'))
     trace_args = (trace_path, trace_layer, trace_iter)
-
+    torch.cuda.set_device(rank)
     for d_model in d_models.split(','):
         if rank == 0:
             print('D_MODEL {} Model {} layer {} it {}'.format(d_model, trace_path, trace_layer, trace_iter))

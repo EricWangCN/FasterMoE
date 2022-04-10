@@ -24,7 +24,7 @@ def run_trace(rank, world_size, d_models, trace_args):
     batch_size = gate.batch_size
 
     gen_rep_gate = lambda d_m, n_e, w_s, topk: gate
-
+    device_name = "cuda:%d"%rank
     for d_model in d_models:
         times = []
         mems = []
@@ -35,7 +35,7 @@ def run_trace(rank, world_size, d_models, trace_args):
                 num_expert=16,
                 d_model=d_model,
                 d_hidden=d_model * 2,
-                world_size=1,
+                world_size=1, # 1
                 gate=gen_rep_gate,
                 top_k=2).to(device_name)
 
@@ -105,8 +105,11 @@ if __name__ == '__main__':
     if int(os.environ["WORLD_SIZE"]) > 1:
         if 'OMPI_COMM_WORLD_RANK' in os.environ:
             os.environ['RANK'] = os.environ['OMPI_COMM_WORLD_RANK']
+            
         deepspeed.init_distributed(auto_mpi_discovery=False)
         rank = torch.distributed.get_rank()
+        os.environ['RANK'] = str(rank)
+        # print(rank)
         world_size = torch.distributed.get_world_size()
     else:
         rank = 0
@@ -118,5 +121,6 @@ if __name__ == '__main__':
     trace_layer = int(os.environ.get('TRACE_LAYER', '0'))
     trace_iter = int(os.environ.get('TRACE_ITER', '80500'))
     trace_args = (trace_path, trace_layer, trace_iter)
-      
+    torch.cuda.set_device(rank)
+
     run_trace(rank, world_size, d_models, trace_args)
